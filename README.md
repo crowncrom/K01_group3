@@ -2,10 +2,15 @@
 
 K01 Group3 Development repo
 
-# Member
+# Create package
 
-kurota
-katsui
-irahara
-mitoma
-kamimura
+```
+python setup.py sdist
+```
+
+# Install package
+
+```
+pip install dist/smart_trash_can*
+```
+
