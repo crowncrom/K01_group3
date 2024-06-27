@@ -11,4 +11,5 @@ setup(
       [console_scripts]
       smart_trash_can = smart_trash_can.cli:execute
     """,
+    install_requires=open('requirements.txt').read().splitlines(),
 )
