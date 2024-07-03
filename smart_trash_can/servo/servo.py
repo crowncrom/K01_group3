@@ -5,34 +5,28 @@ import RPi.GPIO as GPIO
 import pigpio
 from threading import Thread
 
-# sleep time set
-INTERVAL = 1
-# angle
-ORIGIN = 90
-ANGLE_RED = 45
-ANGLE_GREEN = 135
-# LED
-LED_RED = 16  
-LED_GREEN = 19  
-# SW
-SW_RED = 6
-SW_GREEN = 5
-# SERVO
-SERVO = 18
-
 class Servo(Thread):
-    def __init__(self) -> None:
+    def __init__(self, config) -> None:
         super().__init__()
+        self.interval = config["interval"]
+        self.led_red = config["gpio"]["led"]["red"]
+        self.led_green = config["gpio"]["led"]["green"]
+        self.sw_red = config["gpio"]["sw"]["red"]
+        self.sw_green = config["gpio"]["sw"]["green"]
+        self.angle_origin = config["angle"]["origin"]
+        self.angle_red = config["angle"]["red"]
+        self.angle_green = config["angle"]["green"]
+        self.mortar = config["gpio"]["mortar"]
         GPIO.setwarnings(False) 
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(LED_RED, GPIO.OUT)
-        GPIO.setup(LED_GREEN, GPIO.OUT)
-        GPIO.setup(SW_RED, GPIO.IN, pull_up_down=GPIO.PUD_UP) 
-        GPIO.setup(SW_GREEN, GPIO.IN, pull_up_down=GPIO.PUD_UP) 
+        GPIO.setup(self.led_red, GPIO.OUT)
+        GPIO.setup(self.led_green, GPIO.OUT)
+        GPIO.setup(self.sw_red, GPIO.IN, pull_up_down=GPIO.PUD_UP) 
+        GPIO.setup(self.sw_green, GPIO.IN, pull_up_down=GPIO.PUD_UP) 
         self.pi = pigpio.pi()
-        self.set_angle(ORIGIN)
-        GPIO.output(LED_RED, GPIO.LOW)
-        GPIO.output(LED_GREEN, GPIO.LOW)
+        self.set_angle(self.angle_origin)
+        GPIO.output(self.led_red, GPIO.LOW)
+        GPIO.output(self.led_green, GPIO.LOW)
         self.alive = True
         self.start()
         print("Servo initialized")
@@ -52,25 +46,25 @@ class Servo(Thread):
         pulse_width = (angle / 180) * (2500 - 500) + 500
         
         'Set the servo pulse width on the specified SERVO_PIN  '
-        self.pi.set_servo_pulsewidth(SERVO, pulse_width)
+        self.pi.set_servo_pulsewidth(self.mortar, pulse_width)
 
 
     def run(self):
         while self.alive:
-            if GPIO.input(SW_RED) == GPIO.LOW:
-                print("SW_RED pushed")    
-                GPIO.output(LED_RED, GPIO.HIGH)  
-                self.set_angle(ANGLE_RED)
-                time.sleep(INTERVAL)
-                GPIO.output(LED_RED, GPIO.LOW)
-                self.set_angle(ORIGIN)
+            if GPIO.input(self.sw_red) == GPIO.LOW:
+                print("self.sw_red pushed")    
+                GPIO.output(self.led_red, GPIO.HIGH)  
+                self.set_angle(self.angle_red)
+                time.sleep(self.interval)
+                GPIO.output(self.led_red, GPIO.LOW)
+                self.set_angle(self.angle_origin)
             
-            elif GPIO.input(SW_GREEN) == GPIO.LOW:
-                print("SW_GREEN pushed")
-                GPIO.output(LED_GREEN, GPIO.HIGH)  
-                self.set_angle(ANGLE_GREEN)  
-                time.sleep(INTERVAL)
-                GPIO.output(LED_GREEN, GPIO.LOW)
-                self.set_angle(ORIGIN)
+            elif GPIO.input(self.sw_green) == GPIO.LOW:
+                print("self.sw_green pushed")
+                GPIO.output(self.led_green, GPIO.HIGH)  
+                self.set_angle(self.angle_green)  
+                time.sleep(self.interval)
+                GPIO.output(self.led_green, GPIO.LOW)
+                self.set_angle(self.angle_origin)
 
             time.sleep(0.1)

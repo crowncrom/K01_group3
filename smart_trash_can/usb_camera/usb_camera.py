@@ -2,12 +2,14 @@
 import cv2
 
 class UsbCamera():
-    def __init__(self):
+    def __init__(self, config):
+        self.device_id = config['deviceId']
+        print("Camera initialized")
         pass
 
     def capture(self):
         # カメラを起動
-        cap = cv2.VideoCapture(0)  # カメラIDを変更して試してください
+        cap = cv2.VideoCapture(self.device_id)
         if not cap.isOpened():
             print("カメラが見つかりません")
             return None

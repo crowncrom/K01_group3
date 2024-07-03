@@ -1,0 +1,24 @@
+{
+    "camera": {
+        "deviceId": 0
+    },
+    "servo": {
+        "interval": 1,
+        "angle": {
+            "origin": 90,
+            "red": 45,
+            "green": 135
+        },
+        "gpio": {
+            "led": {
+                "red": 16,
+                "green": 19
+            },
+            "sw": {
+                "red": 6,
+                "green": 5
+            },
+            "mortar": 18 
+        }
+    }
+}
