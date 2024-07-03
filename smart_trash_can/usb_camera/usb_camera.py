@@ -34,9 +34,6 @@ class UsbCamera(Thread):
                 print("フレームの読み込みに失敗しました")
                 break
 
-            # フレームを表示
-            cv2.imshow('Camera', self.frame)
-
     def capture(self, img_path):
         cv2.imwrite(img_path, self.frame)
         return self.frame
