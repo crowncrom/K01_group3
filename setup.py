@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="smart_trash_can",
-    version='2.0',
+    version='2.1',
     author='K01_Group03',
     url='https://github.com/crowncrom/K01_group3',
     packages=find_packages(where='.'),
