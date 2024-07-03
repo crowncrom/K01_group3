@@ -1,9 +1,10 @@
 import json
 import time
+import random
 import cv2
 from .servo import Servo
 from .usb_camera import UsbCamera
-from .prediction import Prediction
+# from .prediction import Prediction
 
 def print_console_help():
     print("--- Conlole ---")
@@ -19,10 +20,10 @@ def main():
     config  = json.load(json_file)
     servo = Servo(config["servo"])
     cam = UsbCamera(config["camera"]) 
-    pred = Prediction(config["prediction"])
-    if config["prediction"]["isLearning"]:
-        pred.learning()
-    pred.load()
+    # pred = Prediction(config["prediction"])
+    # if config["prediction"]["isLearning"]:
+    #    pred.learning()
+    # pred.load()
     cv2.namedWindow("Preview")
 
     while True:
@@ -30,7 +31,8 @@ def main():
         if user_command == "c":
             img_name = "k01_group03_smart-trash-can_capture_"+str(time.time())+".jpg"
             cv2.imshow('Preview', cam.capture(img_name))
-            pred.prediction(img_name)
+            # servo.trun_on(pred.prediction(img_name))
+            servo.trun_on(random.randint(0,1))
             cv2.waitKey(1000)
         elif user_command == "q":
             cam.finalize()

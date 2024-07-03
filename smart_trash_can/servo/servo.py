@@ -48,23 +48,28 @@ class Servo(Thread):
         'Set the servo pulse width on the specified SERVO_PIN  '
         self.pi.set_servo_pulsewidth(self.mortar, pulse_width)
 
+    def trun_on(self, val):
+        if val == 0:
+            GPIO.output(self.led_red, GPIO.HIGH)
+            self.set_angle(self.angle_red)
+            time.sleep(self.interval)
+            GPIO.output(self.led_red, GPIO.LOW)
+            self.set_angle(self.angle_origin)
+        elif val == 1:
+            GPIO.output(self.led_green, GPIO.HIGH)
+            self.set_angle(self.angle_green)
+            time.sleep(self.interval)
+            GPIO.output(self.led_green, GPIO.LOW)
+            self.set_angle(self.angle_origin)
 
     def run(self):
         while self.alive:
             if GPIO.input(self.sw_red) == GPIO.LOW:
-                print("self.sw_red pushed")    
-                GPIO.output(self.led_red, GPIO.HIGH)  
-                self.set_angle(self.angle_red)
-                time.sleep(self.interval)
-                GPIO.output(self.led_red, GPIO.LOW)
-                self.set_angle(self.angle_origin)
-            
+                print("self.sw_red pushed")
+                trun_on(0)
+
             elif GPIO.input(self.sw_green) == GPIO.LOW:
                 print("self.sw_green pushed")
-                GPIO.output(self.led_green, GPIO.HIGH)  
-                self.set_angle(self.angle_green)  
-                time.sleep(self.interval)
-                GPIO.output(self.led_green, GPIO.LOW)
-                self.set_angle(self.angle_origin)
+                trun_on(1)
 
             time.sleep(0.1)
