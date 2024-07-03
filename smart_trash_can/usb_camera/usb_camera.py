@@ -1,47 +1,42 @@
 #USBカメラを使用します
 import cv2
+from threading import Thread
 
-class UsbCamera():
+class UsbCamera(Thread):
     def __init__(self, config):
+        super().__init__()
         self.device_id = config['deviceId']
+        self.cap = cv2.VideoCapture(self.device_id)
+        self.alive = True
+        self.start()
         print("Camera initialized")
-        pass
 
-    def capture(self):
+    def __del__(self):
+        self.finalize()
+
+    def finalize(self):
+        self.cap.release()
+        cv2.destroyAllWindows()
+        self.alive = False
+        self.join()
+
+    def run(self):
         # カメラを起動
-        cap = cv2.VideoCapture(self.device_id)
-        if not cap.isOpened():
+        if not self.cap.isOpened():
             print("カメラが見つかりません")
             return None
+        print("カメラが起動しました")
 
-        print("カメラが起動しました。Sキーを押して撮影します。")
-
-        while True:
+        while self.alive:
             # フレームを読み込む
-            ret, frame = cap.read()
+            ret, self.frame = self.cap.read()
             if not ret:
                 print("フレームの読み込みに失敗しました")
                 break
 
             # フレームを表示
-            cv2.imshow('Camera', frame)
+            cv2.imshow('Camera', self.frame)
 
-            # キーボードの入力を待つ
-            key = cv2.waitKey(1) & 0xFF
-
-            # 's'キーが押された場合、フレームをnumpy配列として返す
-            if key == ord('s'):
-                print("撮影されました")
-                cap.release()
-                cv2.destroyAllWindows()
-                return frame
-
-            # 'q'キーが押された場合、終了
-            elif key == ord('q'):
-                print("プログラムを終了します")
-                break
-
-        # カメラとウィンドウを解放
-        cap.release()
-        cv2.destroyAllWindows()
-        return None
+    def capture(self, img_path):
+        cv2.imwrite(img_path, self.frame)
+        return self.frame

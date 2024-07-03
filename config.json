@@ -20,5 +20,12 @@
             },
             "mortar": 18 
         }
+    },
+    "prediction": {
+        "isLearning": false,
+        "modelName": "k01_group03_smart-trash-can.keras",
+        "batchSize": 2,
+        "imageHeight": 120,
+        "imageWidth": 120
     }
 }
